@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Leader Type Quiz | Excursion II Education</title>
+<style>
+:root {
+  --cobalt: #1B21F0;
+  --green:  #ADE865;
+  --purple: #7031EB;
+  --yellow: #F9E450;
+  --pink:   #F093E2;
+  --sky:    #BBF1FD;
+  --ink:    #000000;
+  --muted:  #5E5E5E;
+  --rule:   #D5D5D5;
+  --white:  #FFFFFF;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: "Agenda", "Helvetica Neue", Helvetica, Arial, -apple-system, sans-serif;
+  background: var(--white);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+.stage {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 28px 80px;
+}
+header {
+  text-align: center;
+  padding: 24px 0 32px;
+  margin-bottom: 32px;
+}
+.brand-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.brand-mark {
+  font-family: "Times New Roman", Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 0.95;
+  text-align: center;
+}
+.brand-mark .first { display: inline-block; transform: translateY(-2px); }
+.brand-mark .plus { font-size: 10px; vertical-align: super; }
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cobalt);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+h1 {
+  font-size: clamp(34px, 6vw, 58px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.0;
+  color: var(--ink);
+  margin: 14px 0 10px;
+  text-transform: uppercase;
+}
+.subtitle {
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.start-screen, .question-screen, .result-screen { display: none; }
+.active { display: block; animation: fadeIn 0.45s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.intro-card {
+  background: var(--cobalt);
+  color: var(--white);
+  padding: 40px 32px;
+  position: relative;
+}
+.intro-card h2 {
+  color: var(--sky);
+  font-size: 13px;
+  margin: 0 0 18px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.intro-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 14px;
+}
+.intro-card p:last-of-type { margin-bottom: 0; }
+.intro-card strong { color: var(--sky); font-weight: 700; }
+.btn {
+  display: inline-block;
+  background: var(--cobalt);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  margin-top: 28px;
+  font-family: inherit;
+}
+.btn:hover { background: #0a0fc4; transform: translateY(-1px); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+}
+.btn-secondary:hover {
+  background: var(--ink);
+  color: var(--white);
+}
+.btn-accent {
+  background: var(--green);
+  color: var(--ink);
+}
+.btn-accent:hover { background: #9adb52; }
+.progress {
+  height: 6px;
+  background: var(--rule);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cobalt);
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.q-counter {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cobalt);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.q-text {
+  font-size: clamp(22px, 3.8vw, 30px);
+  font-weight: 800;
+  line-height: 1.18;
+  margin-bottom: 30px;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.option {
+  background: var(--white);
+  border: 2px solid var(--rule);
+  padding: 20px 24px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: all 0.15s ease;
+  text-align: left;
+  font-family: inherit;
+  color: var(--ink);
+}
+.option:hover { border-color: var(--cobalt); }
+.option.selected {
+  border-color: var(--cobalt);
+  background: var(--cobalt);
+  color: var(--white);
+}
+.option .letter {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  background: var(--rule);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  margin-right: 14px;
+  vertical-align: middle;
+}
+.option.selected .letter {
+  background: var(--sky);
+  color: var(--cobalt);
+}
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.controls .btn {
+  margin-top: 0;
+}
+/* Result screen */
+.result-hero {
+  background: var(--cobalt);
+  color: var(--white);
+  padding: 56px 36px 44px;
+  text-align: center;
+  position: relative;
+}
+.result-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  color: var(--sky);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.result-type {
+  font-size: clamp(80px, 14vw, 140px);
+  font-weight: 800;
+  color: var(--sky);
+  letter-spacing: 0.01em;
+  margin: 6px 0;
+  line-height: 0.95;
+}
+.result-name {
+  font-size: 18px;
+  color: var(--white);
+  margin-top: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.result-temperament {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--sky);
+  text-transform: uppercase;
+  margin-top: 14px;
+  font-weight: 700;
+}
+.result-body { margin-top: 32px; padding: 16px 0; }
+.result-body p {
+  font-size: 15px; line-height: 1.6;
+  color: var(--ink); margin: 0 0 14px;
+}
+.result-callout {
+  background: var(--yellow);
+  padding: 24px 28px;
+  margin: 28px 0;
+}
+.result-callout strong {
+  display: block;
+  color: var(--cobalt);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.result-callout p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.result-callout.next {
+  background: var(--green);
+}
+.result-callout.next strong { color: var(--ink); }
+.bar-block {
+  margin-top: 28px;
+  background: var(--white);
+  padding: 26px 28px;
+  border: 2px solid var(--rule);
+}
+.bar-block h3 {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cobalt);
+  margin: 0 0 22px;
+  font-weight: 700;
+}
+.dimension {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+.dimension .label-left { text-align: right; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+.dimension .label-right { text-align: left; font-weight: 700; color: var(--ink); letter-spacing: 0.04em; }
+.dimension-bar {
+  height: 10px;
+  background: var(--rule);
+  position: relative;
+  overflow: hidden;
+}
+.dimension-fill-left, .dimension-fill-right {
+  position: absolute; top: 0; bottom: 0;
+  background: var(--ink);
+}
+.dimension-fill-left { left: 0; }
+.dimension-fill-right { right: 0; }
+.dimension-bar.dominant-left .dimension-fill-left { background: var(--cobalt); }
+.dimension-bar.dominant-right .dimension-fill-right { background: var(--cobalt); }
+.footer-note {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ink);
+  margin-top: 40px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+@media (max-width: 600px) {
+  .stage { padding: 24px 18px 60px; }
+  .intro-card { padding: 32px 22px; }
+  .result-hero { padding: 44px 22px 32px; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <div class="brand-bar">
+      <div class="brand-mark">
+        <span class="first">R<span class="plus">+co</span></span><br>
+        <span style="font-style:italic;">Excursions</span>
+      </div>
+    </div>
+    <div class="eyebrow">Excursion II Education  ·  Leadership Series</div>
+    <h1>The Leader Type Quiz</h1>
+    <div class="subtitle">A quick read on your natural leadership default</div>
+  </header>
+
+  <!-- START SCREEN -->
+  <div id="start" class="start-screen active">
+    <div class="intro-card">
+      <h2>Welcome.</h2>
+      <p>This is a high-level Myers-Briggs read — built to help you understand your <em>natural leadership default</em> as a salon owner.</p>
+      <p>It's 16 questions. There are no right answers. Pick the option that feels truer for you most of the time. Trust your gut.</p>
+      <p>When you finish, you'll get your 4-letter type — your starting point for tomorrow's deep dive into Situational Leadership II.</p>
+    </div>
+    <button class="btn" onclick="startQuiz()">Begin the Quiz</button>
+  </div>
+
+  <!-- QUESTION SCREEN -->
+  <div id="quiz" class="question-screen">
+    <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="q-counter" id="q-counter">Question 1 of 16</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="controls">
+      <button class="btn btn-secondary" id="back-btn" onclick="goBack()">← Back</button>
+      <button class="btn" id="next-btn" onclick="goNext()" disabled>Next →</button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="result-screen">
+    <div class="result-hero">
+      <div class="result-eyebrow">Your Leadership Type</div>
+      <div class="result-type" id="result-type">ENFP</div>
+      <div class="result-name" id="result-name">The Campaigner</div>
+      <div class="result-temperament" id="result-temperament">Idealist (NF)</div>
+    </div>
+
+    <div class="bar-block">
+      <h3>Your Dimensions</h3>
+      <div id="dimension-bars"></div>
+    </div>
+
+    <div class="result-body">
+      <p id="result-energy"></p>
+      <div class="result-callout">
+        <strong>Your Core Leadership Style</strong>
+        <p id="result-core-style"></p>
+      </div>
+      <p id="result-flex-hint"></p>
+    </div>
+
+    <div class="result-callout next" style="margin-top: 32px;">
+      <strong>Next Step</strong>
+      <p>Turn to <strong>page <span id="result-page-num">6</span></strong> of <em>The 16 Leader Playbook</em> for your full type page — natural strengths, blind spots, how to flex through SLII, and how to specifically lead your ENFP stylist.</p>
+    </div>
+
+    <div class="controls" style="margin-top: 24px;">
+      <button class="btn btn-secondary" onclick="restartQuiz()">Retake the Quiz</button>
+    </div>
+
+    <div class="footer-note">
+      Albie X Cortes  ·  Excursion II Education  ·  R+co Excursions II
+    </div>
+  </div>
+</div>
+
+<script>
+// 16 questions, balanced 4 per dimension: E/I, S/N, T/F, J/P
+const questions = [
+  // E vs I
+  { q: "After a long day in the salon, you recharge by...",
+    a: ["Going out with the team or close friends — talking it out", "Going home, closing the door, and being alone with your thoughts"],
+    dim: ["E", "I"] },
+  { q: "In a team meeting, you tend to...",
+    a: ["Think out loud — your best ideas come mid-sentence", "Process internally first — speak when you've landed on something"],
+    dim: ["E", "I"] },
+  { q: "When you walk onto the salon floor, your energy...",
+    a: ["Lifts. People energize you. You feed off the buzz.", "Steadies. You scan, observe, and engage selectively."],
+    dim: ["E", "I"] },
+  { q: "Reading social cues, you tend to be...",
+    a: ["Quick to engage — you'll start the conversation", "Quick to observe — you'll wait to see what's needed"],
+    dim: ["E", "I"] },
+
+  // S vs N
+  { q: "When you're planning the year ahead, you focus more on...",
+    a: ["What worked last year — proven moves you can repeat and improve", "What's possible — patterns and trends others haven't seen yet"],
+    dim: ["S", "N"] },
+  { q: "When training a new stylist, you naturally start with...",
+    a: ["The step-by-step process — clear, sequential, hands-on", "The why and the vision — the big picture they're stepping into"],
+    dim: ["S", "N"] },
+  { q: "You're more drawn to...",
+    a: ["What is — concrete realities, present-tense facts", "What could be — possibilities, theories, future scenarios"],
+    dim: ["S", "N"] },
+  { q: "When you describe your salon to a new person, you lead with...",
+    a: ["Specifics — locations, services, numbers, what we do", "Story — what we stand for, who we serve, where we're going"],
+    dim: ["S", "N"] },
+
+  // T vs F
+  { q: "When you have to deliver hard news to a stylist, you focus first on...",
+    a: ["Being clear and fair — the facts of the situation", "Being human and gentle — how it will land on them"],
+    dim: ["T", "F"] },
+  { q: "In decision-making, you trust more in...",
+    a: ["Logic, data, and consistency of principle", "Values, relationships, and impact on people"],
+    dim: ["T", "F"] },
+  { q: "If a stylist is underperforming, your first instinct is to...",
+    a: ["Look at the system — what's missing in their training, accountability, KPIs?", "Look at the person — what's going on for them right now, emotionally and personally?"],
+    dim: ["T", "F"] },
+  { q: "You feel most respected when people describe you as...",
+    a: ["Fair, direct, competent — they know where they stand with you", "Caring, empathetic, supportive — they feel safe and seen by you"],
+    dim: ["T", "F"] },
+
+  // J vs P
+  { q: "Your ideal week is...",
+    a: ["Planned out by Sunday night — calendar locked, priorities set", "Open and responsive — you'll feel into what each day needs"],
+    dim: ["J", "P"] },
+  { q: "When a new opportunity appears, you tend to...",
+    a: ["Evaluate it against your existing plan — does it fit?", "Lean into the energy — interesting! let's explore!"],
+    dim: ["J", "P"] },
+  { q: "You feel most relaxed when...",
+    a: ["Things are decided and moving — the plan is in motion", "Things are open — you have room to flex, change, adapt"],
+    dim: ["J", "P"] },
+  { q: "Deadlines for you are...",
+    a: ["A useful structure — you hit them well in advance", "A friendly fiction — you create urgency naturally near the end"],
+    dim: ["J", "P"] }
+];
+
+// Type meta data
+const typeMeta = {
+  ISTJ: { name: "The Logistician", salon: "The Steward", temp: "Guardian (SJ)", core: "The Operator", page: 6,
+    energy: "You lead with consistency, structure, and earned trust. Systems are your love language — and your team relies on the predictability you create.",
+    flex: "Your growth edge: bring more verbal warmth and human acknowledgment to your direction. Your ENFP stylists especially need to feel met as a person before they can hear your structure." },
+  ISFJ: { name: "The Defender", salon: "The Caretaker", temp: "Guardian (SJ)", core: "The Caretaker", page: 7,
+    energy: "You lead with quiet devotion. You read the emotional temperature of the room and hold people through hard seasons.",
+    flex: "Your growth edge: lead the harder conversation sooner. Care and accountability can coexist — and your ENFP stylists need both." },
+  ESTJ: { name: "The Executive", salon: "The Commander", temp: "Guardian (SJ)", core: "The Operator", page: 8,
+    energy: "You lead from the front. You make decisions, drive results, and set the cadence. Your team knows where they stand with you.",
+    flex: "Your growth edge: convert directives into invitations. Your ENFP stylists need to feel co-authored with, not commanded at." },
+  ESFJ: { name: "The Consul", salon: "The Hostess", temp: "Guardian (SJ)", core: "The Caretaker", page: 9,
+    energy: "You lead by making everyone feel chosen. The warmth in your salon is YOUR warmth. People stay because they feel celebrated.",
+    flex: "Your growth edge: hold the hard truth even when it disrupts harmony. Care + clarity is the formula your ENFP stylists need from you." },
+  ISTP: { name: "The Virtuoso", salon: "The Craftsman", temp: "Artisan (SP)", core: "The Operator (with Visionary edge)", page: 10,
+    energy: "You lead by example and mastery. Your credibility is in your craft. Words are expensive — but when you speak, the team listens.",
+    flex: "Your growth edge: use words, not just silent approval. Your ENFP stylists need verbal acknowledgment to know they're seen." },
+  ISFP: { name: "The Adventurer", salon: "The Artist", temp: "Artisan (SP)", core: "The Caretaker (with Visionary aesthetic)", page: 11,
+    energy: "You lead through beauty, presence, and authenticity. Your salon is a personal expression. Your team feels free to be themselves.",
+    flex: "Your growth edge: build the operational rhythm you'd rather skip. Structure is the scaffolding that protects your free-spirited culture." },
+  ESTP: { name: "The Entrepreneur", salon: "The Dealmaker", temp: "Artisan (SP)", core: "The Visionary (Operator energy)", page: 12,
+    energy: "You lead with momentum. You read the room, find the opportunity, and move first. Your salon is alive because YOU are alive.",
+    flex: "Your growth edge: schedule the unsexy weekly 1:1. The slow conversation is the conversation that actually retains people." },
+  ESFP: { name: "The Entertainer", salon: "The Energizer", temp: "Artisan (SP)", core: "The Caretaker (with Visionary flair)", page: 13,
+    energy: "You ARE the salon experience. Joy is your leadership tool. Your team laughs more and hustles harder when you're in the room.",
+    flex: "Your growth edge: hold the hard conversation, and watch the numbers, even when it kills the vibe. Both/and is the practice." },
+  INTJ: { name: "The Architect", salon: "The Strategist", temp: "Rational (NT)", core: "The Visionary (Operator backbone)", page: 14,
+    energy: "You lead with vision and architecture. While others react to the week, you're modeling the next three years.",
+    flex: "Your growth edge: translate strategy into emotional story. Your ENFP stylists need to feel WHY before they can execute on the WHAT." },
+  INTP: { name: "The Logician", salon: "The Analyst", temp: "Rational (NT)", core: "The Visionary (Operator analytical)", page: 15,
+    energy: "You lead by understanding. You think ten layers deep before any decision — and that confidence becomes the team's confidence.",
+    flex: "Your growth edge: be visibly present. Your detached analytical care does not register as care to your ENFP stylists." },
+  ENTJ: { name: "The Commander", salon: "The Visionary", temp: "Rational (NT)", core: "The Visionary (Operator drive)", page: 16,
+    energy: "You lead from out front, with vision and velocity. Your salon is on a trajectory — everyone feels the pull of momentum.",
+    flex: "Your growth edge: soften the delivery. The velocity already lands — you don't have to push." },
+  ENTP: { name: "The Debater", salon: "The Innovator", temp: "Rational (NT)", core: "The Visionary (Operator wit)", page: 17,
+    energy: "You lead with ideas, energy, and possibility. Your salon never goes stale. Stylists grow fast under you.",
+    flex: "Your growth edge: land the plane. Every brainstorm ends with one concrete, written-down commitment." },
+  INFJ: { name: "The Advocate", salon: "The Healer", temp: "Idealist (NF)", core: "The Caretaker (Visionary depth)", page: 18,
+    energy: "You lead with quiet conviction and depth. You see your stylists — really see them. Your salon has a soul.",
+    flex: "Your growth edge: have the conversation you've been postponing. Love the person AND hold the line." },
+  INFP: { name: "The Mediator", salon: "The Idealist", temp: "Idealist (NF)", core: "The Caretaker (Visionary soul)", page: 19,
+    energy: "You lead from values. Authenticity is non-negotiable. Your salon is a sanctuary — your team trusts you completely.",
+    flex: "Your growth edge: hold accountability without apology. The phrase 'Because I care about you, I have to tell you...' will save your salon." },
+  ENFJ: { name: "The Protagonist", salon: "The Mentor", temp: "Idealist (NF)", core: "The Caretaker (Visionary inspiration)", page: 20,
+    energy: "You lead by lifting. You see something in people they can't yet see in themselves. Your salon is a development engine.",
+    flex: "Your growth edge: stop over-helping. Let them carry the weight. Your belief is a gift; their growth requires they hold it themselves." },
+  ENFP: { name: "The Campaigner", salon: "The Catalyst", temp: "Idealist (NF)", core: "The Visionary (Caretaker warmth) — SALON BENCHMARK", page: 21,
+    energy: "You lead by inspiration, possibility, and presence. Your salon hums with energy because YOU do. You ignite anything.",
+    flex: "Your growth edge: build the operational systems that hold the energy. Boring rhythms protect your visionary culture." }
+};
+
+// State
+let current = 0;
+let answers = {};
+
+function startQuiz() {
+  document.getElementById('start').classList.remove('active');
+  document.getElementById('quiz').classList.add('active');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-counter').textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('progress-fill').style.width = `${((current) / questions.length) * 100}%`;
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  q.a.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.innerHTML = `<span class="letter">${i === 0 ? 'A' : 'B'}</span>${text}`;
+    btn.onclick = () => selectOption(i);
+    if (answers[current] === i) btn.classList.add('selected');
+    optionsEl.appendChild(btn);
+  });
+
+  document.getElementById('back-btn').style.visibility = current === 0 ? 'hidden' : 'visible';
+  document.getElementById('next-btn').disabled = answers[current] === undefined;
+  document.getElementById('next-btn').textContent = current === questions.length - 1 ? 'See My Result →' : 'Next →';
+}
+
+function selectOption(idx) {
+  answers[current] = idx;
+  document.querySelectorAll('.option').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function goNext() {
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function goBack() {
+  if (current > 0) {
+    current--;
+    renderQuestion();
+  }
+}
+
+function calculateType() {
+  const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+  questions.forEach((q, i) => {
+    const choice = answers[i];
+    if (choice !== undefined) {
+      scores[q.dim[choice]]++;
+    }
+  });
+  const type =
+    (scores.E >= scores.I ? 'E' : 'I') +
+    (scores.S >= scores.N ? 'S' : 'N') +
+    (scores.T >= scores.F ? 'T' : 'F') +
+    (scores.J >= scores.P ? 'J' : 'P');
+  return { type, scores };
+}
+
+function showResult() {
+  const { type, scores } = calculateType();
+  const meta = typeMeta[type];
+  document.getElementById('quiz').classList.remove('active');
+  document.getElementById('result').classList.add('active');
+
+  document.getElementById('result-type').textContent = type;
+  document.getElementById('result-name').textContent = meta.name + " · " + meta.salon;
+  document.getElementById('result-temperament').textContent = meta.temp;
+  document.getElementById('result-energy').textContent = meta.energy;
+  document.getElementById('result-core-style').textContent = meta.core;
+  document.getElementById('result-flex-hint').textContent = meta.flex;
+  document.getElementById('result-page-num').textContent = meta.page;
+
+  // Dimension bars — fill ALWAYS grows toward the dominant letter
+  // so a clear cobalt bar visually pushes toward the side you scored.
+  const dimensions = [
+    { left: 'E', right: 'I', leftLabel: 'Extravert', rightLabel: 'Introvert' },
+    { left: 'S', right: 'N', leftLabel: 'Sensing', rightLabel: 'Intuitive' },
+    { left: 'T', right: 'F', leftLabel: 'Thinking', rightLabel: 'Feeling' },
+    { left: 'J', right: 'P', leftLabel: 'Judging', rightLabel: 'Perceiving' }
+  ];
+  const barsEl = document.getElementById('dimension-bars');
+  barsEl.innerHTML = '';
+  dimensions.forEach(d => {
+    const total = scores[d.left] + scores[d.right];
+    const leftPct = total ? (scores[d.left] / total) * 100 : 50;
+    const rightPct = 100 - leftPct;
+    const dominantLeft = leftPct >= 50;
+    const dominantPct = dominantLeft ? leftPct : rightPct;
+    // Soften the dominant label and bolden the bar toward the chosen side
+    const fillSide = dominantLeft
+      ? `<div class="dimension-fill-left" style="width: ${dominantPct}%; background: var(--cobalt);"></div>`
+      : `<div class="dimension-fill-right" style="width: ${dominantPct}%; background: var(--cobalt);"></div>`;
+    const leftEmphasis = dominantLeft ? 'style="color: var(--cobalt);"' : '';
+    const rightEmphasis = dominantLeft ? '' : 'style="color: var(--cobalt);"';
+    const row = document.createElement('div');
+    row.className = 'dimension';
+    row.innerHTML = `
+      <div class="label-left" ${leftEmphasis}>${d.leftLabel}</div>
+      <div class="dimension-bar">${fillSide}</div>
+      <div class="label-right" ${rightEmphasis}>${d.rightLabel}</div>
+    `;
+    barsEl.appendChild(row);
+  });
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = {};
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('start').classList.add('active');
+}
+</script>
+</body>
+</html>
